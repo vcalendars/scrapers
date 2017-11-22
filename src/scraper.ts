@@ -16,16 +16,18 @@ export abstract class Scraper {
     /**
      * Scrape the data found at the provided url.
      * @param baseUrl The url to retrieve the html from.
+     * @param options Scraper options provided by configuration
      */
-    public Scrape(baseUrl: string) : Observable<Season> {
+    public Scrape(baseUrl: string, options: any) : Observable<Season> {
 
         return new Observable<Season>(observer => {
             axios.get(baseUrl).then(baseResponse => {
                 // Determine the list of urls to scrape from
-                this.DetermineScrapeUrls(baseResponse.data).subscribe(u => {
+                this.DetermineScrapeUrls(baseResponse.data, options).subscribe(u => {
+                    console.log("Scraping " + u);
                     axios.get(u).then(response => {
                         // Peform scraper-specific scrape on the html
-                        this.PerformScrape(response.data).subscribe(s => {
+                        this.PerformScrape(response.data, options).subscribe(s => {
                             observer.next(s);
                         }, e => {
                             observer.error(e);
@@ -51,14 +53,16 @@ export abstract class Scraper {
     /**
      * Scrape the season data from the given html page.
      * @param html The html to extract the season data from
+     * @param options Scraper options provided by configuration
      */
-    protected abstract PerformScrape(html: string): Observable<Season>;
+    protected abstract PerformScrape(html: string, options: any): Observable<Season>;
 
     /**
      * Get the list of urls - one for each season for this scraper type.
      * @param html The html of the page containing the season list.
+     * @param options Scraper options provided by configuration
      */
-    protected abstract DetermineScrapeUrls(html: string): Observable<string>;
+    protected abstract DetermineScrapeUrls(html: string, options: any): Observable<string>;
 
     /**
      * Get the unique identifying name for this scraper.

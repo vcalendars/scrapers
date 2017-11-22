@@ -7,7 +7,10 @@ let runtests = () => {
         targets: [
             {
                 scraperName: "volleyball-sa",
-                url: "http://www.volleyballsa.com.au/recfixturestest/fixtures"
+                url: "http://www.volleyballsa.com.au/recfixturestest/fixtures",
+                options: {
+                    baseUrl: "http://www.volleyballsa.com.au/recfixturestest/fixtures?grade="
+                }
             }
         ]
     };

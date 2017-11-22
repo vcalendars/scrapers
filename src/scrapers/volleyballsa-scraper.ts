@@ -2,6 +2,7 @@ import { Scraper } from "../scraper";
 import { Season } from "../models/season";
 import Promise = require("bluebird");
 import { Observable } from "rxjs/Observable";
+import Cheerio = require('cheerio');
 
 export class VolleyballSAScraper extends Scraper {
 
@@ -21,10 +22,13 @@ export class VolleyballSAScraper extends Scraper {
         });
     }
 
-    protected DetermineScrapeUrls(html: string): Observable<string> {
+    protected DetermineScrapeUrls(html: string, options: any): Observable<string> {
         return new Observable(observer => {
             try {
-                console.log(html);
+                var $ = Cheerio.load(html);
+                $("#fixtures-grade").children("option").each((i, grade) => {
+                    observer.next(options.baseUrl + $(grade).attr("value"));
+                });
                 observer.complete();
             } catch(e) {
                 observer.error(e);

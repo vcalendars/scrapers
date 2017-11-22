@@ -16,7 +16,7 @@ export function Scrape(config: Configuration): Observable<Season> {
             let scraper = scrapers.filter(s => {
                 return s.ScraperName() == t.scraperName;
             })[0];
-            return scraper.Scrape(t.url);
+            return scraper.Scrape(t.url, t.options);
         });
         var complete = 0;
         results.forEach(r => {
