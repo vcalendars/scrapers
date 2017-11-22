@@ -21,4 +21,15 @@ export class VolleyballSAScraper extends Scraper {
         });
     }
 
+    protected DetermineScrapeUrls(html: string): Observable<string> {
+        return new Observable(observer => {
+            try {
+                console.log(html);
+                observer.complete();
+            } catch(e) {
+                observer.error(e);
+                observer.complete();
+            }
+        });
+    }
 }

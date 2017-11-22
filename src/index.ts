@@ -21,10 +21,13 @@ export function Scrape(config: Configuration): Observable<Season> {
         var complete = 0;
         results.forEach(r => {
             r.subscribe(r => {
+                console.log("Processed Target");
                 observer.next(r);
             }, e => {
+                console.error(e);
                 observer.error(e);
             }, () => {
+                console.log("Completed Target");
                 complete++;
                 if(complete == results.length) {
                     observer.complete();

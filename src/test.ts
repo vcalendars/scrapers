@@ -15,6 +15,8 @@ let runtests = () => {
         console.log(s);
     }, e => {
         console.error(e);
+    }, () => {
+        console.log("Test Completed");
     });
 }
 
