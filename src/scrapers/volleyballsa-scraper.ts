@@ -12,8 +12,8 @@ export class VolleyballSAScraper extends Scraper {
     protected PerformScrape(html: string): Observable<Season> {
         return new Observable(observer => {
             try {
-                console.log(html);
-                throw new Error("Method not implemented.");   
+                observer.next(new Season());
+                observer.complete();
             } catch(e) {
                 observer.error(e);
                 observer.complete();
