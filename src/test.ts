@@ -6,8 +6,8 @@ let runtests = () => {
     let config: Configuration = {
         targets: [
             {
-                scraperName: "",
-                url: ""
+                scraperName: "volleyball-sa",
+                url: "http://www.volleyballsa.com.au/recfixturestest/fixtures"
             }
         ]
     };

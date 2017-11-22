@@ -18,11 +18,17 @@ export function Scrape(config: Configuration): Observable<Season> {
             })[0];
             return scraper.Scrape(t.url);
         });
+        var complete = 0;
         results.forEach(r => {
-            r.then(result =>  {
-                observer.next(result);
-            }, error => {
-                observer.error(error);
+            r.subscribe(r => {
+                observer.next(r);
+            }, e => {
+                observer.error(e);
+            }, () => {
+                complete++;
+                if(complete == results.length) {
+                    observer.complete();
+                }
             });
         });
     });

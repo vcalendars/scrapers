@@ -1,6 +1,7 @@
 import { Scraper } from "../scraper";
 import { Season } from "../models/season";
 import Promise = require("bluebird");
+import { Observable } from "rxjs/Observable";
 
 export class VolleyballSAScraper extends Scraper {
 
@@ -8,13 +9,14 @@ export class VolleyballSAScraper extends Scraper {
         super("volleyball-sa");
     }
 
-    protected PerformScrape(html: string): Promise<Season> {
-        return new Promise((resolve, reject) => {
+    protected PerformScrape(html: string): Observable<Season> {
+        return new Observable(observer => {
             try {
                 console.log(html);
                 throw new Error("Method not implemented.");   
             } catch(e) {
-                reject(e);
+                observer.error(e);
+                observer.complete();
             }
         });
     }
