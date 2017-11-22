@@ -1,23 +1,31 @@
-import { Configuration } from './models/configuration';
+import { Configuration, Target } from './models/configuration';
 import { Scraper } from './scraper';
-import { ScraperResult } from './models/scraper-result';
+import { Observable } from 'rxjs/Observable';
+import { Season } from './models/season';
+
+// Scrapers
+import { VolleyballSAScraper } from './scrapers/volleyballsa-scraper';
 
 /**
  * Scrape calendar data based on the provided configuration object.
  * @param config The configuration describing which data should be scraped.
  */
-export function Scrape(config: Configuration): ScraperResult {
-    var results = config.targets.map(t => {
-        let scraper = scrapers.filter(s => {
-            return s.ScraperName() == t.scraperName;
-        })[0];
-        return scraper.Scrape(t.url);
+export function Scrape(config: Configuration): Observable<Season> {
+    return new Observable(observer => {
+        var results = config.targets.map(t => {
+            let scraper = scrapers.filter(s => {
+                return s.ScraperName() == t.scraperName;
+            })[0];
+            return scraper.Scrape(t.url);
+        });
+        results.forEach(r => {
+            r.then(result =>  {
+                observer.next(result);
+            }, error => {
+                observer.error(error);
+            });
+        });
     });
-    var result = new ScraperResult();
-    result.seasons = results.filter(r => r.season !== null).map(s => {
-        return s.season;
-    });
-    return result;
 }
 
 /**
@@ -29,4 +37,6 @@ export function AvailableScrapers(): Array<string> {
     });
 }
 
-let scrapers: Array<Scraper> = [];
+let scrapers: Array<Scraper> = [
+    new VolleyballSAScraper()
+];
