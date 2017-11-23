@@ -16,4 +16,6 @@ export class Match {
     court: string;
     /** The venue the match will take place at */
     venue: string;
+    /** Optional name for the round */
+    round: string;
 }
