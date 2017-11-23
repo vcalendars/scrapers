@@ -38,7 +38,7 @@ export class VolleyballSAScraper extends Scraper {
                 season.matches = new Array<Match>();
                 let d: string = null;
                 let round: string = null;
-                $("tr").each(tr => {
+                $("tr").each((index, tr) => {
                     let $tr = $(tr);
                     switch($tr.attr('class')) {
                         case "round":
