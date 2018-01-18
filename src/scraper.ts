@@ -1,29 +1,73 @@
 import { Season } from './models/season';
+import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
+import { Observable } from 'rxjs/Observable';
 
 /**
  * Interface describing the behaviour of a single scraper module.
  */
 export abstract class Scraper {
 
+    scraperName: string;
+
+    constructor(scraperName: string) {
+        this.scraperName = scraperName;
+    }
+
     /**
      * Scrape the data found at the provided url.
-     * @param url The url to retrieve the html from.
+     * @param baseUrl The url to retrieve the html from.
+     * @param options Scraper options provided by configuration
      */
-    abstract Scrape(url: string) : ScrapeResult;
+    public Scrape(baseUrl: string, options: any) : Observable<Season> {
+
+        return new Observable<Season>(observer => {
+            axios.get(baseUrl).then(baseResponse => {
+                // Determine the list of urls to scrape from
+                this.DetermineScrapeUrls(baseResponse.data, options).subscribe(u => {
+                    console.log("Scraping " + u);
+                    axios.get(u).then(response => {
+                        // Peform scraper-specific scrape on the html
+                        this.PerformScrape(response.data, options).subscribe(s => {
+                            observer.next(s);
+                        }, e => {
+                            observer.error(e);
+                        }, () => {
+                            console.log("Scrape Completed");
+                        });
+                    }).catch(e => {
+                        observer.error(e);
+                    });
+                }, e => {
+                    observer.error(e);
+                }, () => {
+                    console.log("All Urls Determined");
+                });
+            }, e => {
+                observer.error(e);
+            }).catch(e => {
+                observer.error(e);
+            });
+        });
+    }
+
+    /**
+     * Scrape the season data from the given html page.
+     * @param html The html to extract the season data from
+     * @param options Scraper options provided by configuration
+     */
+    protected abstract PerformScrape(html: string, options: any): Observable<Season>;
+
+    /**
+     * Get the list of urls - one for each season for this scraper type.
+     * @param html The html of the page containing the season list.
+     * @param options Scraper options provided by configuration
+     */
+    protected abstract DetermineScrapeUrls(html: string, options: any): Observable<string>;
 
     /**
      * Get the unique identifying name for this scraper.
      */
-    abstract ScraperName(): string;
-
-}
-
-/**
- * The result of a single scrape.
- */
-export class ScrapeResult {
-    /** The scraped season (if successfull, null if failed) */
-    season: Season;
-    /** Errors that occurred (if failed, null if succeeded) */
-    errors: Array<string>;
+    public ScraperName(): string {
+        return this.scraperName;
+    }
 }

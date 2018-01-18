@@ -20,4 +20,8 @@ export class Target {
      * The scraper type to use to retrieve the data from the html.
      */
     scraperName: string;
+    /** 
+     * Custom options to provide to scraper 
+     */
+    options: any;
 }
