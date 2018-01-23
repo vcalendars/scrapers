@@ -1,4 +1,4 @@
-import { Season } from './models/season';
+import { Season } from '@vcalendars/models';
 import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
 import { Observable } from 'rxjs/Observable';
 

@@ -1,7 +1,7 @@
-import { Configuration, Target } from './models/configuration';
+import { Configuration, Target } from '@vcalendars/models';
 import { Scraper } from './scraper';
 import { Observable } from 'rxjs/Observable';
-import { Season } from './models/season';
+import { Season } from '@vcalendars/models';
 
 // Scrapers
 import { VolleyballSAScraper } from './scrapers/volleyballsa-scraper';

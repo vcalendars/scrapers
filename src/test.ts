@@ -1,5 +1,5 @@
 import * as scraper from './index';
-import { Configuration } from './models/configuration';
+import { Configuration } from '@vcalendars/models';
 import { Scrape } from './index';
 
 let runtests = () => {

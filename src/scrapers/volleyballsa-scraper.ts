@@ -1,11 +1,11 @@
 import { Scraper } from "../scraper";
-import { Season } from "../models/season";
+import { Season } from '@vcalendars/models';
 import Promise = require("bluebird");
 import { Observable } from "rxjs/Observable";
 import Cheerio = require('cheerio');
-import { Match } from "../models/match";
+import { Match } from '@vcalendars/models';
 import * as moment from "moment";
-import { Team } from "../models/team";
+import { Team } from '@vcalendars/models';
 
 export class VolleyballSAScraper extends Scraper {
 
