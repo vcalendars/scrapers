@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Season } from '@vcalendars/models';
 
 // Scrapers
-import { VolleyballSAScraper } from './scrapers/volleyballsa-scraper';
+import { VolleyballSAScraper } from './scrapers/volleyballsa/volleyballsa-scraper';
 
 /**
  * Scrape calendar data based on the provided configuration object.

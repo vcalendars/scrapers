@@ -7,15 +7,20 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "npx ts-node src/test.ts"
+    "test": "npx jest",
+    "integration-test": "npx ts-node src/integration_test.ts"
   },
   "repository": "https://github.com/vcalendars/scrapers.git",
   "author": "Daniel Emery <danielremery@gmail.com>",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.8.3",
     "@types/bluebird": "^3.5.18",
     "@types/cheerio": "^0.22.5",
+    "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.3.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
   },
