@@ -1,6 +1,6 @@
 import { Season } from '@vcalendars/models';
-import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
-import { Observable } from 'rxjs/Observable';
+import axios from 'axios';
+import { Observable } from 'rxjs';
 
 /**
  * Interface describing the behaviour of a single scraper module.

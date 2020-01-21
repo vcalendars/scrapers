@@ -1,6 +1,6 @@
-import { Configuration, Target } from '@vcalendars/models';
+import { Configuration } from '@vcalendars/models';
 import { Scraper } from './scraper';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Season } from '@vcalendars/models';
 
 // Scrapers

@@ -1,11 +1,11 @@
 import { Scraper } from "../scraper";
 import { Season } from "@vcalendars/models";
-import Promise = require("bluebird");
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import Cheerio = require("cheerio");
 import { Match } from "@vcalendars/models";
 import * as moment from "moment";
 import { Team } from "@vcalendars/models";
+import ScraperError from "../common/scraper_error";
 
 export class VolleyballSAScraper extends Scraper {
   private DATE_FORMAT = "MMM D HH:mma";
@@ -82,7 +82,7 @@ export class VolleyballSAScraper extends Scraper {
         observer.next(season);
         observer.complete();
       } catch (e) {
-        observer.error(e);
+        observer.error(new ScraperError('', e));
         observer.complete();
       }
     });

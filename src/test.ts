@@ -1,5 +1,6 @@
-import { Configuration } from "@vcalendars/models";
+import { Configuration, Season } from "@vcalendars/models";
 import { Scrape } from "./index";
+import ScraperError from "./common/scraper_error";
 
 let runtests = () => {
   let config: Configuration = {
@@ -15,10 +16,10 @@ let runtests = () => {
     ]
   };
   Scrape(config).subscribe(
-    s => {
+    (s: Season) => {
       console.log(JSON.stringify(s));
     },
-    e => {
+    (e: ScraperError) => {
       console.error(e);
     },
     () => {
