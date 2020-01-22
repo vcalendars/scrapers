@@ -1,5 +1,6 @@
 import Cheerio = require('cheerio');
 import * as moment from 'moment';
+import { Season, Match } from '@vcalendars/models';
 
 const DATE_FORMAT = 'MMM D HH:mma';
 
@@ -21,7 +22,7 @@ export function extractDateFromTr(tr: string) {
   return moment(dateString, DATE_FORMAT).toDate();
 }
 
-export function extractTeamNamesFromTr(tr: string) {
+export function extractTeamsFromTr(tr: string) {
   const $ = loadTr(tr);
   const $versus = $('.team-schedule__versus');
   const home = $versus
@@ -34,9 +35,9 @@ export function extractTeamNamesFromTr(tr: string) {
     .text();
   const duty = $('.team-schedule__duty').text();
   return {
-    home,
-    away,
-    duty,
+    home: { name: home },
+    away: { name: away },
+    duty: duty ? { name: duty }: undefined,
   };
 }
 
@@ -75,4 +76,51 @@ export function extractGradesFromPage(html: string): Grade[] {
       });
     });
   return result;
+}
+
+export interface RawRoundData {
+  seasonName: string;
+  rawTr: string;
+}
+export function extractSeasonsFromGradePage(gradePage: string): RawRoundData[] {
+  const $ = Cheerio.load(gradePage);
+
+  const seasonName = $('h2').text();
+  const result: Array<RawRoundData> = [];
+  let d: string = null;
+  let round: string = null;
+  $('tr').each((i, tr) => {
+    const $tr = $(tr);
+
+    switch ($tr.attr('class')) {
+      case 'round':
+      case 'round past':
+        round = $tr.find('th').text();
+        break;
+      case 'date':
+      case 'date past':
+        d = $tr.find('th').text();
+        break;
+      case 'result':
+      case 'result last':
+      case 'result past':
+      case 'result last past':
+        let match = extractMatchFromTr($.html($tr), round);
+        season.matches.push(match);
+
+        break;
+    }
+  });
+
+  return result;
+}
+
+export function extractMatchFromTr(tr: string, round: string): Match {
+  return {
+    round,
+    time: extractDateFromTr(tr),
+    ...(extractTeamsFromTr(tr)),
+    venue: extractVenueFromTr(tr),
+    court: extractCourtFromTr(tr),
+  }
 }

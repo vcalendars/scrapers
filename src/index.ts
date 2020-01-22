@@ -12,11 +12,11 @@ import { VolleyballSAScraper } from './scrapers/volleyballsa/volleyballsa-scrape
  */
 export function Scrape(config: Configuration): Observable<Season> {
     return new Observable(observer => {
-        var results = config.targets.map(t => {
-            let scraper = scrapers.filter(s => {
-                return s.ScraperName() == t.scraperName;
+        var results = config.targets.map(target => {
+            let scraper = scrapers.filter(scraper => {
+                return scraper.ScraperName() == target.scraperName;
             })[0];
-            return scraper.Scrape(t.url, t.options);
+            return scraper.PerformScrape(target);
         });
         var complete = 0;
         results.forEach(r => {

@@ -1,11 +1,10 @@
 {
   "name": "@vcalendars/scrapers",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Scraper modules to collect volleyball draw data from various websites and format it consistently",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run build",
     "build": "tsc",
     "test": "npx jest",
     "integration-test": "npx ts-node src/integration_test.ts"
