@@ -42,11 +42,13 @@ export function extractTeamNamesFromTr(tr: string) {
 
 function extractVenueDetailsFromTr(tr: string) {
   const $ = loadTr(tr);
-  const venue = $('.team-schedule__venue').text().split('/');
+  const venue = $('.team-schedule__venue')
+    .text()
+    .split('/');
   return {
     venue: venue[0].trim(),
     court: venue[1].trim(),
-  }
+  };
 }
 
 export function extractVenueFromTr(tr: string) {
@@ -55,4 +57,22 @@ export function extractVenueFromTr(tr: string) {
 
 export function extractCourtFromTr(tr: string) {
   return extractVenueDetailsFromTr(tr).court;
+}
+
+export interface Grade {
+  name: string;
+  id: number;
+}
+export function extractGradesFromPage(html: string): Grade[] {
+  const $ = Cheerio.load(html);
+  const result: Grade[] = [];
+  $('#fixtures-grade')
+    .children('option')
+    .each((i, grade) => {
+      result.push({
+        id: parseInt($(grade).attr('value'), 10),
+        name: $(grade).text(),
+      });
+    });
+  return result;
 }

@@ -1,4 +1,5 @@
 const extractor = require('../volleyballsa-extractors');
+const testData = require('./volleyballsa-extractors.data');
 
 const TEST_ROW = `
 <tr class="result">
@@ -12,8 +13,8 @@ const TEST_ROW = `
 </tr>
 `;
 
-describe('extractors', () => {
-  describe('volleyballsa', () => {
+describe('volleyballsa', () => {
+  describe('extractors', () => {
     describe('extractDateFromTr', () => {
       it('Should extract match date from tr', () => {
         const tr = `
@@ -42,9 +43,9 @@ describe('extractors', () => {
         `;
 
         const expected = {
-          home: "Won Direction",
-          away: "2nd Game Anyone?",
-          duty: "",
+          home: 'Won Direction',
+          away: '2nd Game Anyone?',
+          duty: '',
         };
 
         const actual = extractor.extractTeamNamesFromTr(tr);
@@ -78,6 +79,18 @@ describe('extractors', () => {
         const expected = 'Court 1';
 
         const actual = extractor.extractCourtFromTr(tr);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+    describe('extractGradesFromPage', () => {
+      it('Should extract grades from page', () => {
+        const expected = [
+          { id: 414, name: 'Henley / A' },
+          { id: 415, name: 'Pt Noarlunga / A' },
+        ];
+
+        const actual = extractor.extractGradesFromPage(testData.basePage);
 
         expect(actual).toEqual(expected);
       });
