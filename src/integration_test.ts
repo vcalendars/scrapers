@@ -8,6 +8,7 @@ let runtests = () => {
       {
         scraperName: 'volleyball-sa',
         url: 'https://www.volleyballsa.com.au/social/indoor/fixtures',
+        timezone: 'Australia/Adelaide',
         options: {
           baseUrl:
             'https://www.volleyballsa.com.au/social/indoor/fixtures?grade=',
