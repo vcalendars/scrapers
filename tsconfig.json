@@ -6,8 +6,6 @@
     "outDir": "./dist",
     "strict": true,
     "strictNullChecks": false,
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   }
 }

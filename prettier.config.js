@@ -1,5 +1,3 @@
-module.exports = {
-    trailingComma: 'all',
-    singleQuote: true,
-    tabWidth: 2,
-};
+const prettierConfig = require("@danielemeryau/prettier-config");
+
+module.exports = prettierConfig;

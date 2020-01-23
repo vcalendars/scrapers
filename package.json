@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
+    "@danielemeryau/prettier-config": "0.0.6",
     "@types/bluebird": "^3.5.18",
     "@types/cheerio": "^0.22.5",
     "@types/jest": "^24.9.0",

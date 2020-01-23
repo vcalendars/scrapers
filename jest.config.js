@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ["/node_modules/", "/dist/"],
-  testRegex: "((\\.|/)(test|spec))\\.[jt]sx?$",
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testRegex: '((\\.|/)(test|spec))\\.[jt]sx?$',
 };
