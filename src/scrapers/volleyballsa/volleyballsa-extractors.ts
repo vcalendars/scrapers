@@ -37,7 +37,7 @@ export function extractTeamsFromTr(tr: string) {
   return {
     home: { name: home },
     away: { name: away },
-    duty: duty ? { name: duty }: undefined,
+    duty: duty ? { name: duty } : undefined,
   };
 }
 
@@ -82,11 +82,11 @@ export interface RawRoundData {
   seasonName: string;
   rawTr: string;
 }
-export function extractSeasonsFromGradePage(gradePage: string): RawRoundData[] {
+export function extractSeasonFromGradePage(gradePage: string): Season {
   const $ = Cheerio.load(gradePage);
 
   const seasonName = $('h2').text();
-  const result: Array<RawRoundData> = [];
+  const seasonMatches = new Array<Match>();
   let d: string = null;
   let round: string = null;
   $('tr').each((i, tr) => {
@@ -106,21 +106,24 @@ export function extractSeasonsFromGradePage(gradePage: string): RawRoundData[] {
       case 'result past':
       case 'result last past':
         let match = extractMatchFromTr($.html($tr), round);
-        season.matches.push(match);
+        seasonMatches.push(match);
 
         break;
     }
   });
 
-  return result;
+  return {
+    name: seasonName,
+    matches: seasonMatches,
+  };
 }
 
 export function extractMatchFromTr(tr: string, round: string): Match {
   return {
     round,
     time: extractDateFromTr(tr),
-    ...(extractTeamsFromTr(tr)),
+    ...extractTeamsFromTr(tr),
     venue: extractVenueFromTr(tr),
     court: extractCourtFromTr(tr),
-  }
+  };
 }

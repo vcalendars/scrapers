@@ -43,12 +43,12 @@ describe('volleyballsa', () => {
         `;
 
         const expected = {
-          home: 'Won Direction',
-          away: '2nd Game Anyone?',
-          duty: '',
+          home: { name: 'Won Direction' },
+          away: { name: '2nd Game Anyone?' },
+          duty: undefined,
         };
 
-        const actual = extractor.extractTeamNamesFromTr(tr);
+        const actual = extractor.extractTeamsFromTr(tr);
 
         expect(actual).toEqual(expected);
       });

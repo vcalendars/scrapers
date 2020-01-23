@@ -25,7 +25,7 @@ describe('volleyballsa', () => {
         sinon.stub(extractors, 'extractGradesFromPage').returns(expected);
 
         const result = await collectors
-          .collectGrades(baseUrl)
+          .collectGradeList(baseUrl)
           .pipe(rxjsOperators.toArray())
           .toPromise();
 

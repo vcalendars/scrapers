@@ -11,10 +11,11 @@ export class VolleyballSAScraper extends Scraper {
   }
 
   public PerformScrape(target: Target): Observable<Season> {
-    return collectors.collectGradeList(target.url).pipe(
-      collectors.transformGradesListToGradePages(target.url),
-      collectors.transformGradePagesToRawRoundData(),
-      collectors.transformRawRoundDataToSeasons(),
-    );
+    return collectors
+      .collectGradeList(target.url)
+      .pipe(
+        collectors.transformGradesListToGradePages(target.url),
+        collectors.transformGradePagesToSeasons(),
+      );
   }
 }
