@@ -23,10 +23,11 @@ describe('volleyballsa', () => {
             <td class="team-schedule__time">18:45pm</td>
           </tr>
         `;
+        const timezone = 'Australia/Adelaide';
 
         const expected = new Date('2020-01-22T08:15:00.000Z');
 
-        const actual = extractor.extractDateFromTr(tr);
+        const actual = extractor.extractDateFromTr(tr, timezone);
 
         expect(actual).toEqual(expected);
       });

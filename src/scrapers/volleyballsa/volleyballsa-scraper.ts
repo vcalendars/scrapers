@@ -15,7 +15,7 @@ export class VolleyballSAScraper extends Scraper {
       .collectGradeList(target.url)
       .pipe(
         collectors.transformGradesListToGradePages(target.url),
-        collectors.transformGradePagesToSeasons(),
+        collectors.transformGradePagesToSeasons(target.timezone),
       );
   }
 }

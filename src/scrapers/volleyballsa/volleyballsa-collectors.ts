@@ -30,8 +30,8 @@ export function transformGradesListToGradePages(baseUrl: string) {
   });
 }
 
-export function transformGradePagesToSeasons() {
+export function transformGradePagesToSeasons(timezone: string) {
   return map((gradePage: string) => {
-    return extractors.extractSeasonFromGradePage(gradePage);
+    return extractors.extractSeasonFromGradePage(gradePage, timezone);
   });
 }

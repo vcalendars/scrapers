@@ -1,14 +1,14 @@
 import Cheerio = require('cheerio');
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { Season, Match } from '@vcalendars/models';
 
-const DATE_FORMAT = 'MMM D HH:mma';
+const DATE_FORMAT = 'MMM d HH:mm';
 
 function loadTr(tr: string) {
   return Cheerio.load(`<table>${tr}</table>`);
 }
 
-export function extractDateFromTr(tr: string) {
+export function extractDateFromTr(tr: string, tz: string) {
   const $ = loadTr(tr);
   const dateWithDayName = $('.team-schedule__date')
     .text()
@@ -17,9 +17,13 @@ export function extractDateFromTr(tr: string) {
   const date = dateWithDayName.split(',')[1].trim();
   const time = $('.team-schedule__time')
     .text()
-    .trim();
+    .trim()
+    .replace('am', '')
+    .replace('pm', '');
   const dateString = `${date} ${time}`;
-  return moment(dateString, DATE_FORMAT).toDate();
+  return DateTime.fromFormat(dateString, DATE_FORMAT, {
+    zone: tz,
+  }).toJSDate();
 }
 
 export function extractTeamsFromTr(tr: string) {
@@ -82,7 +86,10 @@ export interface RawRoundData {
   seasonName: string;
   rawTr: string;
 }
-export function extractSeasonFromGradePage(gradePage: string): Season {
+export function extractSeasonFromGradePage(
+  gradePage: string,
+  timezone: string,
+): Season {
   const $ = Cheerio.load(gradePage);
 
   const seasonName = $('h2').text();
@@ -105,7 +112,7 @@ export function extractSeasonFromGradePage(gradePage: string): Season {
       case 'result last':
       case 'result past':
       case 'result last past':
-        let match = extractMatchFromTr($.html($tr), round);
+        let match = extractMatchFromTr($.html($tr), round, timezone);
         seasonMatches.push(match);
 
         break;
@@ -118,10 +125,14 @@ export function extractSeasonFromGradePage(gradePage: string): Season {
   };
 }
 
-export function extractMatchFromTr(tr: string, round: string): Match {
+export function extractMatchFromTr(
+  tr: string,
+  round: string,
+  timezone: string,
+): Match {
   return {
     round,
-    time: extractDateFromTr(tr),
+    time: extractDateFromTr(tr, timezone),
     ...extractTeamsFromTr(tr),
     venue: extractVenueFromTr(tr),
     court: extractCourtFromTr(tr),
