@@ -11,7 +11,7 @@
   },
   "repository": "https://github.com/vcalendars/scrapers.git",
   "author": "Daniel Emery <danielremery@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
     "@danielemeryau/prettier-config": "0.0.6",
