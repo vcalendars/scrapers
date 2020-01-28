@@ -1,18 +1,6 @@
 const extractor = require('../volleyballsa-extractors');
 const testData = require('./volleyballsa-extractors.data');
 
-const TEST_ROW = `
-<tr class="result">
-  <td class="team-schedule__date">Wednesday, Jan 22</td>
-  <td class="team-schedule__versus">
-    <b>Won Direction</b> <span>v</span> <b>2nd Game Anyone?</b>
-  </td>
-  <td class="team-schedule__duty"></td>
-  <td class="team-schedule__venue">Port Noarlunga / Court 1</td>
-  <td class="team-schedule__time">18:45pm</td>
-</tr>
-`;
-
 describe('volleyballsa', () => {
   describe('extractors', () => {
     describe('extractDateFromTr', () => {

@@ -13,7 +13,6 @@ export function extractDateFromTr(tr: string, tz: string) {
   const dateWithDayName = $('.team-schedule__date')
     .text()
     .trim();
-  debugger;
   const date = dateWithDayName.split(',')[1].trim();
   const time = $('.team-schedule__time')
     .text()
