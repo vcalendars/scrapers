@@ -1,4 +1,5 @@
-import { Season, Target } from '@vcalendars/models';
+import { Target } from '@vcalendars/models/raw';
+import { ScrapedSeason } from '@vcalendars/models/processed';
 import { Observable } from 'rxjs';
 
 /**
@@ -15,7 +16,7 @@ export abstract class Scraper {
    * Scrape all the seasons from the given target.
    * @param target Details about the target to scrape.
    */
-  public abstract PerformScrape(target: Target): Observable<Season>;
+  public abstract PerformScrape(target: Target): Observable<ScrapedSeason>;
 
   /**
    * Get the unique identifying name for this scraper.

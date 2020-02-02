@@ -10,7 +10,7 @@ describe('volleyballsa', () => {
     afterEach(() => {
       sinon.restore();
     });
-    describe('collectGrades', () => {
+    describe('collectGradeList', () => {
       it('must get the page using axios and extract the grades with an extractor', async () => {
         const baseUrl = 'http://test-url.com';
         const htmlData = '<html></html>';

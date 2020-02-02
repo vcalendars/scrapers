@@ -1,6 +1,6 @@
 import Cheerio = require('cheerio');
 import { DateTime } from 'luxon';
-import { Season, Match } from '@vcalendars/models';
+import { Season, Match } from '@vcalendars/models/raw';
 
 const DATE_FORMAT = 'MMM d HH:mm';
 

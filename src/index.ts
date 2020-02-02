@@ -1,8 +1,8 @@
-import { Configuration } from '@vcalendars/models';
 import { Scraper } from './scraper';
 import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
-import { Season } from '@vcalendars/models';
+import { Configuration, Season } from '@vcalendars/models/raw';
+import { ScrapedSeason } from '@vcalendars/models/processed';
 
 // Scrapers
 import { VolleyballSAScraper } from './scrapers/volleyballsa/volleyballsa-scraper';
@@ -11,7 +11,7 @@ import { VolleyballSAScraper } from './scrapers/volleyballsa/volleyballsa-scrape
  * Scrape calendar data based on the provided configuration object.
  * @param config The configuration describing which data should be scraped.
  */
-export function Scrape(config: Configuration): Observable<Season> {
+export function Scrape(config: Configuration): Observable<ScrapedSeason> {
   return from(config.targets).pipe(
     flatMap(target => {
       const scraper = scrapers.filter(

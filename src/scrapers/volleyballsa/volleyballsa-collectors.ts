@@ -2,6 +2,8 @@ import { Observable, from } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 import axios from 'axios';
 
+import { Target } from '@vcalendars/models/raw';
+
 import * as extractors from './volleyballsa-extractors';
 import { Grade } from './volleyballsa-extractors';
 import { determineGradeUrl } from './volleyballsa-helpers';
@@ -30,8 +32,15 @@ export function transformGradesListToGradePages(baseUrl: string) {
   });
 }
 
-export function transformGradePagesToSeasons(timezone: string) {
+export function transformGradePagesToScrapedSeasons(sourceTarget: Target) {
   return map((gradePage: string) => {
-    return extractors.extractSeasonFromGradePage(gradePage, timezone);
+    const season = extractors.extractSeasonFromGradePage(
+      gradePage,
+      sourceTarget.timezone,
+    );
+    return {
+      season,
+      sourceTarget,
+    };
   });
 }
