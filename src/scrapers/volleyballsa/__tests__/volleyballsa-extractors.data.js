@@ -1,5 +1,5 @@
 module.exports = {
-  basePage: `
+  socialBasePage: `
 <!DOCTYPE html>
 <html lang="en">
 <head>

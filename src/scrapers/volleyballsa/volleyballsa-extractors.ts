@@ -28,19 +28,16 @@ export function extractDateFromTr(tr: string, tz: string) {
 export function extractTeamsFromTr(tr: string) {
   const $ = loadTr(tr);
   const $versus = $('.team-schedule__versus');
-  const home = $versus
-    .find('b')
-    .first()
-    .text();
-  const away = $versus
-    .find('b')
-    .last()
-    .text();
-  const duty = $('.team-schedule__duty').text();
+  const $b = $versus.find('b')
+  const homeB = $b.eq(0);
+  const homeA = homeB.find('a');
+  const home = homeA.length > 0 ? homeA.text() : homeB.text();
+  const awayB = $b.eq(1);
+  const awayA = awayB.find('a');
+  const away = awayA.length > 0 ? awayA.text() : awayB.text();
   return {
     home: { name: home },
     away: { name: away },
-    duty: duty ? { name: duty } : undefined,
   };
 }
 

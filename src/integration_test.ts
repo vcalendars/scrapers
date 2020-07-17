@@ -6,16 +6,30 @@ import { ScrapedSeason } from '@vcalendars/models/processed';
 let runtests = () => {
   let config: Configuration = {
     targets: [
+      // Social Indoor
       {
         scraperName: 'volleyball-sa',
         url: 'https://www.volleyballsa.com.au/social/indoor/fixtures',
         timezone: 'Australia/Adelaide',
         matchDuration: 60,
-        options: {
-          baseUrl:
-            'https://www.volleyballsa.com.au/social/indoor/fixtures?grade=',
-        },
+        options: {},
       },
+      // State League Indoor
+      {
+        scraperName: 'volleyball-sa',
+        url: 'https://www.volleyballsa.com.au/savl/fixtures',
+        timezone: 'Australia/Adelaide',
+        matchDuration: 60,
+        options: {},
+      },
+      // Social Beach
+      {
+        scraperName: 'volleyball-sa',
+        url: 'https://www.volleyballsa.com.au/social/beach/fixtures',
+        timezone: 'Australia/Adelaide',
+        matchDuration: 60,
+        options: {},
+      }
     ],
   };
   Scrape(config).subscribe(
