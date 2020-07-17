@@ -4,7 +4,7 @@ const testData = require('./volleyballsa-extractors.data');
 describe('volleyballsa', () => {
   describe('extractors', () => {
     describe('extractDateFromTr', () => {
-      it('Should extract match date from social tr', () => {
+      it('Must extract match date from social tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__date">Wednesday, Jan 22</td>
@@ -19,7 +19,7 @@ describe('volleyballsa', () => {
 
         expect(actual).toEqual(expected);
       });
-      it('Should extract match date from state league tr', () => {
+      it('Must extract match date from state league tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__date">Saturday, Jul 4</td>
@@ -36,7 +36,7 @@ describe('volleyballsa', () => {
       });
     });
     describe('extractTeamNamesFromTr', () => {
-      it('Should extract team names from social tr', () => {
+      it('Must extract team names from social tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__versus">
@@ -56,7 +56,7 @@ describe('volleyballsa', () => {
 
         expect(actual).toEqual(expected);
       });
-      it('Should extract team names from state league tr', () => {
+      it('Must extract team names from state league tr', () => {
         const tr = `
         <tr class="result">
           <td class="team-schedule__versus">
@@ -90,7 +90,7 @@ describe('volleyballsa', () => {
       });
     });
     describe('extractVenueFromTr', () => {
-      it('Should extract venue from social tr', () => {
+      it('Must extract venue from social tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__venue">Port Noarlunga / Court 1</td>
@@ -103,7 +103,7 @@ describe('volleyballsa', () => {
 
         expect(actual).toEqual(expected);
       });
-      it('Should extract venue from state league tr', () => {
+      it('Must extract venue from state league tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__venue">Mt Lofty Community Centre / Court 1</td>
@@ -118,7 +118,7 @@ describe('volleyballsa', () => {
       });
     });
     describe('extractCourtFromTr', () => {
-      it('Should extract court from social tr', () => {
+      it('Must extract court from social tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__venue">Port Noarlunga / Court 1</td>
@@ -131,7 +131,7 @@ describe('volleyballsa', () => {
 
         expect(actual).toEqual(expected);
       });
-      it('Should extract court from social tr', () => {
+      it('Must extract court from social tr', () => {
         const tr = `
           <tr class="result">
             <td class="team-schedule__venue">Mt Lofty Community Centre / Court 1</td>
@@ -146,13 +146,54 @@ describe('volleyballsa', () => {
       });
     });
     describe('extractGradesFromPage', () => {
-      it('Should extract grades from social page', () => {
+      it('Must extract grades from social page', () => {
         const expected = [
           { id: 414, name: 'Henley / A' },
           { id: 415, name: 'Pt Noarlunga / A' },
         ];
 
         const actual = extractor.extractGradesFromPage(testData.socialBasePage);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+    describe('isTrBye', () => {
+      it('Must identify when a Tr is a bye', () => {
+        const tr = `
+          <tr class="result last past">
+              <td class="team-schedule__versus">
+                <b>USC LION</b> <span>v</span> <b><a href="#duty-21681-0" onclick="document.getElementById('duty-21681-0').classList.toggle('hidden');return false">(bye)</a></b>
+              </td>
+              <td class="team-schedule__duty"></td>
+              <td class="team-schedule__venue"></td>
+              <td class="team-schedule__time"></td>
+            </tr>
+          `;
+
+        const expected = true;
+
+        const actual = extractor.isTrBye(tr);
+
+        expect(actual).toEqual(expected);
+      });
+      it('Must identify when a Tr is not a bye', () => {
+        const tr = `
+          <tr class="result past">
+						<td class="team-schedule__date">Saturday, Jul 4</td>
+						<td class="team-schedule__versus">
+              <b>AUSTRAL</b>
+              <span>v</span>
+              <b><a href="#duty-21680-3353" onclick="document.getElementById('duty-21680-3353').classList.toggle('hidden');return false">HENLEY</a></b>
+            </td>
+						<td class="team-schedule__duty">WOMEN / RW / HENLEY</td>
+						<td class="team-schedule__venue">Mt Lofty Community Centre / Court 3</td>
+						<td class="team-schedule__time">09:20am</td>
+					</tr>
+        `;
+
+        const expected = false;
+
+        const actual = extractor.isTrBye(tr);
 
         expect(actual).toEqual(expected);
       });
