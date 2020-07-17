@@ -1,8 +1,10 @@
 import Cheerio = require('cheerio');
 import { DateTime } from 'luxon';
 
-import { Season, Match } from '@vcalendars/models/raw';
+import { Season, Match, Event } from '@vcalendars/models/raw';
 import ScraperError from '../../common/scraper_error';
+import { type } from 'os';
+import { EventType } from '@vcalendars/models/raw/event';
 
 const DATE_FORMAT = 'MMM d HH:mm';
 
@@ -10,20 +12,29 @@ function loadTr(tr: string) {
   return Cheerio.load(`<table>${tr}</table>`);
 }
 
-export function extractDateFromTr(tr: string, tz: string) {
+function parseDate(dateString: string, tz: string) {
+  return DateTime.fromFormat(dateString, DATE_FORMAT, {
+    zone: tz,
+  }).toJSDate();
+}
+
+function extractDateStringFromTr(tr: string) {
+  const $ = loadTr(tr);
+  const dateWithDayName = $('.team-schedule__date').text().trim();
+  return dateWithDayName.split(',')[1].trim();
+}
+
+export function extractDateTimeFromTr(tr: string, tz: string) {
   try {
     const $ = loadTr(tr);
-    const dateWithDayName = $('.team-schedule__date').text().trim();
-    const date = dateWithDayName.split(',')[1].trim();
-    const time = $('.team-schedule__time')
+    const dateString = extractDateStringFromTr(tr);
+    const timeString = $('.team-schedule__time')
       .text()
       .trim()
       .replace('am', '')
       .replace('pm', '');
-    const dateString = `${date} ${time}`;
-    return DateTime.fromFormat(dateString, DATE_FORMAT, {
-      zone: tz,
-    }).toJSDate();
+    const dateTimeString = `${dateString} ${timeString}`;
+    return parseDate(dateTimeString, tz);
   } catch (e) {
     throw new ScraperError('Error extracting date from <tr>', e, {
       tr,
@@ -42,9 +53,18 @@ export function extractTeamsFromTr(tr: string) {
     const awayB = $b.eq(1);
     const awayA = awayB.find('a');
     const away = awayA.length > 0 ? awayA.text() : awayB.text();
+
+    const duty = $('.team-schedule__duty').text();
+
     return {
-      home: { name: home },
-      away: { name: away },
+      home: { name: home, isExternal: false },
+      away: { name: away, isExternal: false },
+      ...(duty && {
+        duty: {
+          name: duty,
+          isExternal: true,
+        },
+      }),
     };
   } catch (e) {
     throw new ScraperError('Error extracting teams from <tr>', e, {
@@ -53,14 +73,19 @@ export function extractTeamsFromTr(tr: string) {
   }
 }
 
+function parseVenue(venueString: string) {
+  const parts = venueString.split('/');
+  return {
+    venue: parts[0].trim(),
+    court: parts[1].trim(),
+  };
+}
+
 function extractVenueDetailsFromTr(tr: string) {
   try {
     const $ = loadTr(tr);
-    const venue = $('.team-schedule__venue').text().split('/');
-    return {
-      venue: venue[0].trim(),
-      court: venue[1].trim(),
-    };
+    const venueString = $('.team-schedule__venue').text();
+    return parseVenue(venueString);
   } catch (e) {
     throw new ScraperError('Error extracting venue details from <tr>', e, {
       tr,
@@ -81,6 +106,58 @@ export function isTrBye(tr: string) {
   const $versus = $('.team-schedule__versus');
 
   return $versus.text().toLowerCase().indexOf('bye') > 0;
+}
+
+function extractDutyFromSmall(small: string, dateString: string, tz: string) {
+  debugger;
+  const $ = Cheerio.load(small);
+  const dutyB = $('b').text();
+
+  const spanText = $('span').html();
+  const [timeAndVenue, teams] = spanText.split('<br>');
+
+  const [rawTime, ...venueParts] = timeAndVenue.trim().split(' ');
+  const timeString = rawTime.trim().replace('am', '').replace('pm', '');
+
+  const [homeName, awayName] = teams.split(' v');
+
+  return {
+    ...parseVenue(venueParts.join(' ')),
+    time: parseDate(`${dateString} ${timeString}`, tz),
+    home: {
+      name: homeName.trim(),
+      isExternal: true,
+    },
+    away: {
+      name: awayName.trim(),
+      isExternal: true,
+    },
+    duty: {
+      name: dutyB.replace(' Duty:', ''),
+      isExternal: false,
+    },
+  };
+}
+
+export function extractDutiesFromTr(tr: string, tz: string) {
+  const result = [];
+  const $ = loadTr(tr);
+  const $versus = $('.team-schedule__versus');
+  const $b = $versus.find('b');
+  const homeB = $b.eq(0);
+  const homeA = homeB.find('a');
+  const dateString = extractDateStringFromTr(tr);
+  if (homeA.length > 0) {
+    const dutyDiv = $(homeA.attr('href'));
+    result.push(extractDutyFromSmall(dutyDiv.html(), dateString, tz));
+  }
+  const awayB = $b.eq(1);
+  const awayA = awayB.find('a');
+  if (awayA.length > 0) {
+    const dutyDiv = $(awayA.attr('href'));
+    result.push(extractDutyFromSmall(dutyDiv.html(), dateString, tz));
+  }
+  return result;
 }
 
 export interface Grade {
@@ -118,7 +195,7 @@ export function extractSeasonFromGradePage(
   const $ = Cheerio.load(gradePage);
 
   const seasonName = $('h2').text();
-  const seasonMatches = new Array<Match>();
+  const seasonEvents = new Array<Event>();
   let d: string = null;
   let round: string = null;
   $('tr').each((i, tr) => {
@@ -137,9 +214,15 @@ export function extractSeasonFromGradePage(
         case 'result last':
         case 'result past':
         case 'result last past':
-          let match = extractMatchFromTr($.html($tr), round, timezone);
-          seasonMatches.push(match);
-
+          const match = extractMatchFromTr($.html($tr), round, timezone);
+          seasonEvents.push(match);
+          const duties = extractDutiesFromTr($.html($tr), timezone).map(
+            (duty) => ({
+              ...duty,
+              type: 'duty' as EventType,
+            }),
+          );
+          seasonEvents.push(...duties);
           break;
       }
     }
@@ -147,7 +230,7 @@ export function extractSeasonFromGradePage(
 
   return {
     name: seasonName,
-    events: seasonMatches,
+    events: seasonEvents,
   };
 }
 
@@ -159,7 +242,7 @@ export function extractMatchFromTr(
   return {
     type: 'match',
     round,
-    time: extractDateFromTr(tr, timezone),
+    time: extractDateTimeFromTr(tr, timezone),
     ...extractTeamsFromTr(tr),
     venue: extractVenueFromTr(tr),
     court: extractCourtFromTr(tr),
