@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 
 import { Season, Match, Event } from '@vcalendars/models/raw';
 import ScraperError from '../../common/scraper_error';
-import { type } from 'os';
 import { EventType } from '@vcalendars/models/raw/event';
 
 const DATE_FORMAT = 'MMM d HH:mm';
@@ -109,7 +108,6 @@ export function isTrBye(tr: string) {
 }
 
 function extractDutyFromSmall(small: string, dateString: string, tz: string) {
-  debugger;
   const $ = Cheerio.load(small);
   const dutyB = $('b').text();
 

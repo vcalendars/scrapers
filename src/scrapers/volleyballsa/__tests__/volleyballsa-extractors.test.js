@@ -84,7 +84,6 @@ describe('volleyballsa', () => {
           duty: { name: 'MEN / LM / AUSTRAL', isExternal: true },
         };
 
-        debugger;
         const actual = extractor.extractTeamsFromTr(tr);
 
         expect(actual).toEqual(expected);
