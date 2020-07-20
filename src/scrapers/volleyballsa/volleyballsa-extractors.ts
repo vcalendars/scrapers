@@ -1,9 +1,9 @@
 import Cheerio = require('cheerio');
 import { DateTime } from 'luxon';
 
-import { Season, Match, Event } from '@vcalendars/models/raw';
+import { Season, Match, Event } from '@teamest/models/raw';
 import ScraperError from '../../common/scraper_error';
-import { EventType } from '@vcalendars/models/raw/event';
+import { EventType } from '@teamest/models/raw/event';
 
 const DATE_FORMAT = 'MMM d HH:mm';
 

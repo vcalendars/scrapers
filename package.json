@@ -1,5 +1,5 @@
 {
-  "name": "@vcalendars/scrapers",
+  "name": "@teamest/scrapers",
   "version": "0.2.0",
   "description": "Scraper modules to collect volleyball draw data from various websites and format it consistently",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
     "test": "npx jest",
     "integration-test": "npx ts-node src/integration_test.ts"
   },
-  "repository": "https://github.com/vcalendars/scrapers.git",
+  "repository": "https://github.com/teamest-au/scrapers.git",
   "author": "Daniel Emery <danielremery@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -27,7 +27,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@vcalendars/models": "^0.5.1",
+    "@teamest/models": "^0.6.1",
     "axios": "^0.19.1",
     "cheerio": "^1.0.0-rc.2",
     "luxon": "^1.21.3",

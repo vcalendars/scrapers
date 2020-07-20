@@ -1,5 +1,5 @@
-import { Target } from '@vcalendars/models/raw';
-import { ScrapedSeason } from '@vcalendars/models/processed';
+import { Target } from '@teamest/models/raw';
+import { ScrapedSeason } from '@teamest/models/processed';
 import { Observable } from 'rxjs';
 
 /**

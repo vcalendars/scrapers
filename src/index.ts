@@ -1,8 +1,8 @@
 import { Scraper } from './scraper';
 import { Observable, from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
-import { Configuration, Season } from '@vcalendars/models/raw';
-import { ScrapedSeason } from '@vcalendars/models/processed';
+import { Configuration, Season } from '@teamest/models/raw';
+import { ScrapedSeason } from '@teamest/models/processed';
 
 // Scrapers
 import { VolleyballSAScraper } from './scrapers/volleyballsa/volleyballsa-scraper';

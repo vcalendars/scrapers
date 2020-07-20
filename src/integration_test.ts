@@ -1,7 +1,7 @@
-import { Configuration, Season } from '@vcalendars/models/raw';
+import { Configuration, Season } from '@teamest/models/raw';
 import { Scrape } from './index';
 import ScraperError from './common/scraper_error';
-import { ScrapedSeason } from '@vcalendars/models/processed';
+import { ScrapedSeason } from '@teamest/models/processed';
 
 let runtests = () => {
   let config: Configuration = {

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { Target } from '@vcalendars/models/raw';
-import { ScrapedSeason } from '@vcalendars/models/processed';
+import { Target } from '@teamest/models/raw';
+import { ScrapedSeason } from '@teamest/models/processed';
 
 import { Scraper } from '../../scraper';
 import * as collectors from './volleyballsa-collectors';

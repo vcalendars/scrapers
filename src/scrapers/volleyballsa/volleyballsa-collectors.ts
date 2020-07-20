@@ -2,7 +2,7 @@ import { Observable, from } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 import axios from 'axios';
 
-import { Target } from '@vcalendars/models/raw';
+import { Target } from '@teamest/models/raw';
 
 import * as extractors from './volleyballsa-extractors';
 import { Grade } from './volleyballsa-extractors';
