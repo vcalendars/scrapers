@@ -1,7 +1,7 @@
 import Cheerio = require('cheerio');
 import { DateTime } from 'luxon';
 
-import { Season, Match, Event } from '@teamest/models/raw';
+import { Season, Match, Event, Duty } from '@teamest/models/raw';
 import ScraperError from '../../common/scraper_error';
 import { EventType } from '@teamest/models/raw/event';
 
@@ -107,7 +107,13 @@ export function isTrBye(tr: string) {
   return $versus.text().toLowerCase().indexOf('bye') > 0;
 }
 
-function extractDutyFromSmall(small: string, dateString: string, tz: string) {
+function extractDutyFromSmall(
+  small: string,
+  dateString: string,
+  round: string,
+  timezone: string,
+  duration: number,
+): Duty {
   const $ = Cheerio.load(small);
   const dutyB = $('b').text();
 
@@ -120,8 +126,11 @@ function extractDutyFromSmall(small: string, dateString: string, tz: string) {
   const [homeName, awayName] = teams.split(' v');
 
   return {
+    type: 'duty',
     ...parseVenue(venueParts.join(' ')),
-    time: parseDate(`${dateString} ${timeString}`, tz),
+    time: parseDate(`${dateString} ${timeString}`, timezone),
+    duration,
+    timezone,
     home: {
       name: homeName.trim(),
       isExternal: true,
@@ -134,11 +143,17 @@ function extractDutyFromSmall(small: string, dateString: string, tz: string) {
       name: dutyB.replace(' Duty:', ''),
       isExternal: false,
     },
+    round,
   };
 }
 
-export function extractDutiesFromTr(tr: string, tz: string) {
-  const result = [];
+export function extractDutiesFromTr(
+  tr: string,
+  round: string,
+  timezone: string,
+  duration: number,
+): Duty[] {
+  const result: Duty[] = [];
   const $ = loadTr(tr);
   const $versus = $('.team-schedule__versus');
   const $b = $versus.find('b');
@@ -147,13 +162,17 @@ export function extractDutiesFromTr(tr: string, tz: string) {
   const dateString = extractDateStringFromTr(tr);
   if (homeA.length > 0) {
     const dutyDiv = $(homeA.attr('href'));
-    result.push(extractDutyFromSmall(dutyDiv.html(), dateString, tz));
+    result.push(
+      extractDutyFromSmall(dutyDiv.html(), dateString, round, timezone, duration),
+    );
   }
   const awayB = $b.eq(1);
   const awayA = awayB.find('a');
   if (awayA.length > 0) {
     const dutyDiv = $(awayA.attr('href'));
-    result.push(extractDutyFromSmall(dutyDiv.html(), dateString, tz));
+    result.push(
+      extractDutyFromSmall(dutyDiv.html(), dateString, round, timezone, duration),
+    );
   }
   return result;
 }
@@ -189,6 +208,7 @@ export interface RawRoundData {
 export function extractSeasonFromGradePage(
   gradePage: string,
   timezone: string,
+  duration: number,
 ): Season {
   const $ = Cheerio.load(gradePage);
 
@@ -212,9 +232,9 @@ export function extractSeasonFromGradePage(
         case 'result last':
         case 'result past':
         case 'result last past':
-          const match = extractMatchFromTr($.html($tr), round, timezone);
+          const match = extractMatchFromTr($.html($tr), round, timezone, duration);
           seasonEvents.push(match);
-          const duties = extractDutiesFromTr($.html($tr), timezone).map(
+          const duties = extractDutiesFromTr($.html($tr), round, timezone, duration).map(
             (duty) => ({
               ...duty,
               type: 'duty' as EventType,
@@ -236,11 +256,14 @@ export function extractMatchFromTr(
   tr: string,
   round: string,
   timezone: string,
+  duration: number,
 ): Match {
   return {
     type: 'match',
     round,
     time: extractDateTimeFromTr(tr, timezone),
+    duration: duration,
+    timezone: timezone,
     ...extractTeamsFromTr(tr),
     venue: extractVenueFromTr(tr),
     court: extractCourtFromTr(tr),

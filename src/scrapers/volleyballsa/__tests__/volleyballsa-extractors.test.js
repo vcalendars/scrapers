@@ -92,6 +92,8 @@ describe('volleyballsa', () => {
     describe('extractDutiesFromTr', () => {
       it('Must extract single duty from tr', async () => {
         const timezone = 'Australia/Adelaide';
+        const duration = 60;
+        const round = 'Bonus Round';
         const tr = `
         <tr class="result">
           <td class="team-schedule__date">Wednesday, Jan 22</td>
@@ -115,15 +117,19 @@ describe('volleyballsa', () => {
         `;
 
         const expected = [{
+          type: 'duty',
           time: new Date('2020-01-22T00:50:00.000Z'),
+          timezone,
+          duration,
           court: 'Court 1',
           venue: 'Mt Lofty Community Centre',
           home: { name: 'HENLEY', isExternal: true },
           away: { name: 'AUSTRAL', isExternal: true },
           duty: { name: 'HENLEY', isExternal: false },
+          round,
         }];
 
-        const actual = extractor.extractDutiesFromTr(tr, timezone);
+        const actual = extractor.extractDutiesFromTr(tr, round, timezone, duration);
 
         expect(actual).toEqual(expected);
       });
