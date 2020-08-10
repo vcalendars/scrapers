@@ -207,6 +207,7 @@ export interface RawRoundData {
 }
 export function extractSeasonFromGradePage(
   gradePage: string,
+  competitionName: string,
   timezone: string,
   duration: number,
 ): Season {
@@ -247,7 +248,8 @@ export function extractSeasonFromGradePage(
   });
 
   return {
-    name: seasonName,
+    competitionName,
+    seasonName: seasonName,
     events: seasonEvents,
   };
 }

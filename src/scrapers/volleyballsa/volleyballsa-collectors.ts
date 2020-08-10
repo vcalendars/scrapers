@@ -36,6 +36,7 @@ export function transformGradePagesToScrapedSeasons(sourceTarget: Target) {
   return map((gradePage: string) => {
     const season = extractors.extractSeasonFromGradePage(
       gradePage,
+      sourceTarget.options.competitionName,
       sourceTarget.options.timezone,
       sourceTarget.options.duration,
     );
